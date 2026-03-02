@@ -51,7 +51,7 @@ const ThemeProvider = ({ children }) => {
   );
 };
 
-// ─── Theme Toggle Button ─────────────────────────────────────
+
 
 const ThemeToggle = ({ className = '' }) => {
   const { dark, toggle } = useTheme();
@@ -93,7 +93,7 @@ const ThemeToggle = ({ className = '' }) => {
   );
 };
 
-// ─── Shared Components ───────────────────────────────────────
+
 
 const ScrollProgress = () => {
   const { scrollYProgress } = useScroll();
@@ -192,7 +192,7 @@ const NAV_ITEMS = ['Home', 'Projects', 'Skills', 'Contributions', 'Contact'];
 const Navbar = () => {
   const [open, setOpen] = useState(false);
 
-  // Close mobile menu on scroll
+
   useEffect(() => {
     if (!open) return;
     const close = () => setOpen(false);
@@ -200,7 +200,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', close);
   }, [open]);
 
-  // Close on Escape
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e) => e.key === 'Escape' && setOpen(false);
@@ -208,7 +208,7 @@ const Navbar = () => {
     return () => window.removeEventListener('keydown', onKey);
   }, [open]);
 
-  // Lock body scroll when mobile menu is open
+
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -223,7 +223,7 @@ const Navbar = () => {
       role="navigation"
       aria-label="Main navigation"
     >
-      {/* ── Desktop bar (≥1024px) — full pill with links ── */}
+
       <div className="hidden lg:flex items-center gap-6 xl:gap-8 px-6 py-3 bg-[var(--nav-bg)] backdrop-blur-lg border border-[var(--card-border)] rounded-full shadow-2xl theme-transition">
         {NAV_ITEMS.map((item) => (
           <a
@@ -239,7 +239,7 @@ const Navbar = () => {
         <ThemeToggle />
       </div>
 
-      {/* ── Mobile / Tablet bar (<1024px) — compact pill with hamburger + theme ── */}
+
       <div className="lg:hidden flex flex-col items-end">
         <div className="flex items-center gap-2 px-2 py-1.5 bg-[var(--nav-bg)] backdrop-blur-lg border border-[var(--card-border)] rounded-full shadow-2xl theme-transition">
           <ThemeToggle />
@@ -264,7 +264,7 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile dropdown */}
+
         <AnimatePresence>
           {open && (
             <motion.div
@@ -449,7 +449,7 @@ function PortfolioInner() {
             className="flex flex-col sm:flex-row gap-4 sm:gap-6 sm:items-center mt-8 sm:mt-12 border-t border-dashed border-[var(--border)] pt-6 sm:pt-8"
           >
             <a
-              href="https://drive.google.com/file/d/1SiSNeGvLJqOwsCDkVMabOYgfGBnmnWbx/view?usp=drive_link"
+              href="https://drive.google.com/file/d/1A_LavKhiAs8b747dCCxis3wsA4j7ltXq/view?usp=sharing"
               download="Vatsal_Jain_Resume.pdf"
               className="group flex items-center gap-3 px-6 py-3 bg-white text-black rounded-full font-medium hover:bg-gray-200 transition-all w-fit text-sm shadow-[0_0_20px_rgba(255,255,255,0.08)]"
             >
