@@ -2,28 +2,46 @@ import { GitHubCalendar } from 'react-github-calendar';
 import { motion } from 'framer-motion';
 import { useState, useEffect, useCallback } from 'react';
 
-/**
- * Renders this year's GitHub contribution graph with a purple theme.
- * Re-fetches contribution data every 5 minutes so it stays up-to-date
- * without a full page reload. Uses a `key` prop on GitHubCalendar to
- * force re-mount and trigger its internal fetch.
- */
-
-const customTheme = {
+const darkTheme = {
   dark: ['#161b22', '#2d1b4e', '#5b21b6', '#7c3aed', '#a855f7'],
 };
 
-const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+const lightTheme = {
+  light: ['#ebedf0', '#d8b4fe', '#a855f7', '#7c3aed', '#5b21b6'],
+};
+
+const REFRESH_INTERVAL = 5 * 60 * 1000; 
+
+const useIsMobile = () => {
+  const [mobile, setMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 640);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 639px)');
+    const handler = (e) => setMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+  return mobile;
+};
 
 const GitHubContributions = ({ username = 'vatsaljain568' }) => {
-  // Incrementing the key forces GitHubCalendar to unmount/remount,
-  // which triggers a fresh fetch from the contributions API.
+
   const [refreshKey, setRefreshKey] = useState(0);
   const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [isDark, setIsDark] = useState(() => !document.documentElement.classList.contains('light'));
+  const isMobile = useIsMobile();
 
   const refresh = useCallback(() => {
     setRefreshKey((k) => k + 1);
     setLastUpdated(new Date());
+  }, []);
+
+  // Watch for theme changes
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(!document.documentElement.classList.contains('light'));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -32,35 +50,35 @@ const GitHubContributions = ({ username = 'vatsaljain568' }) => {
   }, [refresh]);
 
   return (
-    <section id="contributions" className="py-24 md:py-32 relative">
+    <section id="contributions" className="py-16 sm:py-24 md:py-32 relative">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        <div className="flex items-end gap-4 mb-12">
-          <h2 className="text-4xl md:text-5xl font-serif text-white">Open Source</h2>
+        <div className="flex items-end gap-3 sm:gap-4 mb-8 sm:mb-12">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[var(--txt)]">Open Source</h2>
           <div className="h-px bg-purple-500/30 flex-1 mb-2"></div>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 md:p-10 overflow-x-auto">
+        <div className="rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] p-4 sm:p-6 md:p-10 overflow-x-auto theme-transition -mx-4 sm:mx-0">
           <div className="min-w-[680px]">
             <GitHubCalendar
-              key={refreshKey}
+              key={`${refreshKey}-${isDark ? 'dark' : 'light'}-${isMobile ? 'm' : 'd'}`}
               username={username}
-              theme={customTheme}
-              colorScheme="dark"
-              blockSize={13}
-              blockMargin={4}
-              fontSize={12}
+              theme={isDark ? darkTheme : lightTheme}
+              colorScheme={isDark ? 'dark' : 'light'}
+              blockSize={isMobile ? 10 : 13}
+              blockMargin={isMobile ? 3 : 4}
+              fontSize={isMobile ? 10 : 12}
               style={{ width: '100%' }}
               labels={{
                 totalCount: '{{count}} contributions this year',
               }}
             />
           </div>
-          <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/[0.06]">
-            <span className="text-[10px] font-mono text-gray-600">
+          <div className="flex items-center justify-between mt-4 pt-3 border-t border-[var(--border)]">
+            <span className="text-[10px] font-mono text-[var(--txt-muted)]">
               Updated {lastUpdated.toLocaleTimeString()} · refreshes every 5 min
             </span>
             <button
@@ -72,8 +90,7 @@ const GitHubContributions = ({ username = 'vatsaljain568' }) => {
           </div>
         </div>
 
-        {/* OSS highlight card */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="mt-6 sm:mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           <motion.a
             href="https://github.com/vatsaljain568/resources-ai-chatbot-plugin"
             target="_blank"
@@ -82,25 +99,22 @@ const GitHubContributions = ({ username = 'vatsaljain568' }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="group p-6 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-colors"
+            className="group p-4 sm:p-6 rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] hover:bg-[var(--glass)] transition-colors theme-transition"
           >
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                <span className="text-purple-400 text-sm">⚡</span>
-              </div>
               <span className="text-xs font-mono text-purple-400 uppercase tracking-wider">GSoC 2025</span>
             </div>
-            <h3 className="text-lg font-medium text-white mb-2 group-hover:text-purple-300 transition-colors">
+            <h3 className="text-lg font-medium text-[var(--txt)] mb-2 group-hover:text-purple-400 transition-colors">
               Jenkins AI Chatbot Plugin
             </h3>
-            <p className="text-sm text-gray-400 leading-relaxed">
+            <p className="text-sm text-[var(--txt-secondary)] leading-relaxed">
               Contributing to an AI-powered assistant plugin for Jenkins CI/CD. Built with a local LLM backend, RAG pipeline, and conversational UI to reduce the learning curve for new Jenkins users.
             </p>
             <div className="flex gap-2 mt-4 flex-wrap">
-              <span className="px-2 py-1 text-[10px] font-mono border border-white/10 rounded bg-white/5 text-gray-300">Python</span>
-              <span className="px-2 py-1 text-[10px] font-mono border border-white/10 rounded bg-white/5 text-gray-300">RAG</span>
-              <span className="px-2 py-1 text-[10px] font-mono border border-white/10 rounded bg-white/5 text-gray-300">LLM</span>
-              <span className="px-2 py-1 text-[10px] font-mono border border-white/10 rounded bg-white/5 text-gray-300">Java</span>
+              <span className="px-2 py-1 text-[10px] font-mono border border-[var(--badge-border)] rounded bg-[var(--badge-bg)] text-[var(--badge-text)]">Python</span>
+              <span className="px-2 py-1 text-[10px] font-mono border border-[var(--badge-border)] rounded bg-[var(--badge-bg)] text-[var(--badge-text)]">RAG</span>
+              <span className="px-2 py-1 text-[10px] font-mono border border-[var(--badge-border)] rounded bg-[var(--badge-bg)] text-[var(--badge-text)]">LLM</span>
+              <span className="px-2 py-1 text-[10px] font-mono border border-[var(--badge-border)] rounded bg-[var(--badge-bg)] text-[var(--badge-text)]">Java</span>
             </div>
           </motion.a>
 
@@ -109,9 +123,9 @@ const GitHubContributions = ({ username = 'vatsaljain568' }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="p-6 rounded-2xl border border-white/10 bg-white/[0.03] flex flex-col justify-center"
+            className="p-4 sm:p-6 rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] flex flex-col justify-center theme-transition"
           >
-            <p className="text-gray-400 text-sm leading-relaxed mb-4">
+            <p className="text-[var(--txt-secondary)] text-sm leading-relaxed mb-4">
               I believe in building in public and giving back to the tools I use daily. Currently focused on AI/ML tooling in the open-source ecosystem.
             </p>
             <a

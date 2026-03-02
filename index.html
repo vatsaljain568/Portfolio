@@ -3,6 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+
     <title>Vatsal Jain | AI Engineer</title>
     <meta name="description" content="Vatsal Jain — AI Engineer specialising in LLMs, RAG pipelines, and agentic workflows. Building intelligent systems with LangChain, LangGraph, and MCP." />
     
@@ -17,11 +24,14 @@
         theme: {
           extend: {
             colors: {
-              obsidian: '#050505',
-              charcoal: '#0F0F0F',
-              glass: 'rgba(255, 255, 255, 0.03)',
-              border: 'rgba(255, 255, 255, 0.08)',
-              ai: '#a855f7', 
+              surface:   'var(--surface)',
+              surface2:  'var(--surface2)',
+              glass:     'var(--glass)',
+              border:    'var(--border)',
+              ai:        '#a855f7',
+              txt:       'var(--txt)',
+              'txt-secondary': 'var(--txt-secondary)',
+              'txt-muted': 'var(--txt-muted)',
             },
             fontFamily: {
               sans: ['"Space Grotesk"', 'sans-serif'],
@@ -36,14 +46,84 @@
       }
     </script>
 
+    <!-- Prevent flash: apply saved theme before paint -->
+    <script>
+      (function() {
+        var t = localStorage.getItem('theme');
+        if (t === 'light') document.documentElement.classList.add('light');
+      })();
+    </script>
+
     <style>
-      html { scroll-behavior: smooth; }
-      body { background-color: #050505; color: #e5e5e5; }
-      
-      /* Hide Scrollbar for cleaner look */
+      /* ── Theme variables ── */
+      :root {
+        --surface:   #050505;
+        --surface2:  #0F0F0F;
+        --glass:     rgba(255, 255, 255, 0.03);
+        --border:    rgba(255, 255, 255, 0.08);
+        --txt:       #e5e5e5;
+        --txt-secondary: #a1a1aa;
+        --txt-muted: #52525b;
+        --card-bg:   rgba(255, 255, 255, 0.03);
+        --card-border: rgba(255, 255, 255, 0.10);
+        --nav-bg:    rgba(0, 0, 0, 0.50);
+        --nav-bg-mobile: rgba(0, 0, 0, 0.60);
+        --dropdown-bg: rgba(0, 0, 0, 0.80);
+        --grid-color: #80808008;
+        --scrollbar-track: #050505;
+        --scrollbar-thumb: #333;
+        --badge-border: rgba(255,255,255,0.10);
+        --badge-bg: rgba(255,255,255,0.05);
+        --badge-text: #a1a1aa;
+        --spotlight-rgb: 168, 85, 247;
+      }
+
+      :root.light {
+        --surface:   #fafafa;
+        --surface2:  #f4f4f5;
+        --glass:     rgba(0, 0, 0, 0.02);
+        --border:    rgba(0, 0, 0, 0.08);
+        --txt:       #18181b;
+        --txt-secondary: #52525b;
+        --txt-muted: #a1a1aa;
+        --card-bg:   rgba(0, 0, 0, 0.02);
+        --card-border: rgba(0, 0, 0, 0.08);
+        --nav-bg:    rgba(255, 255, 255, 0.70);
+        --nav-bg-mobile: rgba(255, 255, 255, 0.80);
+        --dropdown-bg: rgba(255, 255, 255, 0.92);
+        --grid-color: #00000008;
+        --scrollbar-track: #fafafa;
+        --scrollbar-thumb: #d4d4d8;
+        --badge-border: rgba(0,0,0,0.10);
+        --badge-bg: rgba(0,0,0,0.04);
+        --badge-text: #52525b;
+        --spotlight-rgb: 147, 51, 234;
+      }
+
+      /* ── Smooth global transition ── */
+      html {
+        scroll-behavior: smooth;
+        color-scheme: dark;
+        overflow-x: hidden;
+      }
+      html.light { color-scheme: light; }
+
+      body {
+        background-color: var(--surface);
+        color: var(--txt);
+        transition: background-color 0.5s ease, color 0.5s ease;
+        overflow-x: hidden;
+      }
+
+      /* Transition key elements */
+      nav, footer, section, .theme-transition {
+        transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+      }
+
+      /* ── Scrollbar ── */
       ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: #050505; }
-      ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+      ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+      ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
     </style>
   </head>
   <body>
